@@ -64,19 +64,39 @@ class Contact
     // ====================== CREATE ============================= //
     public function create()
     {
-        $query = "INSERT INTO contacts (nom, prenom, email, telephone) 
+        try {
+            if (!empty($this->id)) {
+                // Update
+                $query = "UPDATE contacts 
+                         SET nom = :nom, 
+                             prenom = :prenom, 
+                             email = :email, 
+                             telephone = :telephone 
+                         WHERE id = :id";
+
+                $ready_query = $this->connect->prepare($query);
+
+                $ready_query->bindValue(":nom", $this->nom);
+                $ready_query->bindValue(":prenom", $this->prenom);
+                $ready_query->bindValue(":email", $this->email);
+                $ready_query->bindValue(":telephone", $this->telephone);
+                $ready_query->bindValue(":id", $this->id);
+
+                return $ready_query->execute();
+            } else {
+                // create
+                $query = "INSERT INTO contacts (nom, prenom, email, telephone) 
                       VALUES (:nom, :prenom, :email, :telephone)";
 
-        try {
+                $ready_query = $this->connect->prepare($query);
 
-            $ready_query = $this->connect->prepare($query);
+                $ready_query->bindValue(":nom", $this->nom);
+                $ready_query->bindValue(":prenom", $this->prenom);
+                $ready_query->bindValue(":email", $this->email);
+                $ready_query->bindValue(":telephone", $this->telephone);
 
-            $ready_query->bindValue(":nom", $this->nom);
-            $ready_query->bindValue(":prenom", $this->prenom);
-            $ready_query->bindValue(":email", $this->email);
-            $ready_query->bindValue(":telephone", $this->telephone);
-
-            return $ready_query->execute();
+                return $ready_query->execute();
+            }
         } catch (PDOException $e) {
 
             return false;
@@ -96,7 +116,30 @@ class Contact
             return [];
         }
     }
-    // ====================== CRUD ============================= //
-    // ====================== CRUD ============================= //
+    // ====================== UPDATE ============================= //
+    public function getById($id)
+    {
+        try {
+            $query = "SELECT * FROM contacts WHERE id = :id";
+            $ready_query = $this->connect->prepare($query);
+            $ready_query->bindParam(":id", $id);
+            $ready_query->execute();
+
+            $data = $ready_query->fetch(PDO::FETCH_ASSOC);
+            if ($data) {
+                $this->id = $data['id'];
+                $this->nom = $data['nom'];
+                $this->prenom = $data['prenom'];
+                $this->email = $data['email'];
+                $this->telephone = $data['telephone'];
+                return true;
+            }
+            return false;
+        } catch (PDOException $e) {
+            return false;
+        }
+    }
+    // ====================== DELETE ============================= //
+
     // ====================== CRUD ============================= //
 }
