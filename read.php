@@ -58,7 +58,7 @@ $contacts = $contact->getAll();
                     <td><?php echo htmlspecialchars($contact['telephone']); ?></td>
                     <td>
                         <a href='update.php?id=<?php echo $contact['id']; ?>' class='btn btn-primary'>Edit</a>
-                        <!-- <a href='delete.php?id=<?php echo $contact['id']; ?>' class='btn btn-danger'>Delete</a> -->
+                        <a href='delete.php?id=<?php echo $contact['id']; ?>' class='btn btn-danger'>Delete</a>
                     </td>
                 </tr>
             <?php endforeach; ?>

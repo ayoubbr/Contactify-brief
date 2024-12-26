@@ -140,6 +140,22 @@ class Contact
         }
     }
     // ====================== DELETE ============================= //
+    public function delete()
+    {
+        if ($this->id === null) {
+            return false;
+        }
 
+        try {
+            $query = "DELETE FROM contacts WHERE id = :id";
+            $ready_query = $this->connect->prepare($query);
+            $ready_query->bindParam(":id", $this->id);
+
+            return $ready_query->execute();
+        } catch (PDOException $e) {
+            echo "Error: " . $e->getMessage();
+            return false;
+        }
+    }
     // ====================== CRUD ============================= //
 }
