@@ -77,13 +77,26 @@ class Contact
             $ready_query->bindValue(":telephone", $this->telephone);
 
             return $ready_query->execute();
-
         } catch (PDOException $e) {
 
             return false;
-
         }
     }
+    // ====================== READ ============================= //
+    public function getAll()
+    {
+        try {
+            $query = "SELECT * FROM contacts ORDER BY id";
+            $ready_query = $this->connect->prepare($query);
+            $ready_query->execute();
+
+            return $ready_query->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            echo "Error: " . $e->getMessage();
+            return [];
+        }
+    }
+    // ====================== CRUD ============================= //
     // ====================== CRUD ============================= //
     // ====================== CRUD ============================= //
 }
